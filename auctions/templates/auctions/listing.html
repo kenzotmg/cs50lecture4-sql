@@ -17,18 +17,24 @@
                 <h3 class="card-subtitle text-success bg-dark" style="text-align: center;">Current bid: ${{ bid }}</h3>
             </div>
         </div>
-        <div class="row">
-            <div class="col-5">
-                <div class="commentBox">
-                    <form action="{% url 'listing' id=id %}" method="POST">
-                        {% csrf_token %}
-                        {{ form }}
-                        <br>
-                        <input type="submit" class="btn btn-primary float-right" value="Post">
-                    </form>
+        {% if user.is_authenticated %}
+            <div class="row">
+                <div class="col-5">
+                    <div class="commentBox">
+                        <form action="{% url 'listing' id=id %}" method="POST">
+                            {% csrf_token %}
+                            {{ form }}
+                            <br>
+                            <input type="submit" class="btn btn-primary float-right" value="Post">
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div>
+                <p class="font-italic">Login to write a comment.</p>
+            </div>
+        {% endif %}
         <div class="row justify-content-start">
             <div class="col-5">
                 <div class="comments">
