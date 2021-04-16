@@ -15,6 +15,17 @@
                   </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-5">
+                <div class="commentBox">
+                    <form action="{% url 'listing' %}" method="POST">
+                        <textarea placeholder="Write a comment..." rows="3" name="comment" style="width: 100%;"></textarea>
+                        <br>
+                        <input type="submit" class="btn btn-primary float-right" value="Post">
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="row justify-content-start">
             <div class="col-5">
                 <div class="comments">

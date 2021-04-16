@@ -93,23 +93,20 @@ def newlisting(request):
 
 def listing(request,id):
     #Get listing by id
-    listing = Listing.objects.filter(id=id)
-    listingValues = list(listing.values())[0]
-    user = User.objects.get(pk=listingValues['user_id'])
-    userListings = list(user.products.all())
+    listing = Listing.objects.get(id=id)
+    user = User.objects.get(pk=listing.user_id)
 
     #Get biggest bid on listing - bid['price__max']
     bid = Bid.objects.filter(listing_id=id).aggregate(Max('price'))['price__max']
     if not bid:
-        bid = listingValues['starting_bid']
+        bid = listing.starting_bid
         
-
-    #Get comments on listing *<------->*
-    comments = Comment.objects.filter(product_id=id)
+    #Get comments on listing
+    comments = listing.allcomments.all()
 
 
     return render(request, 'auctions/listing.html',{
-        "listing" : listingValues,
+        "listing" : listing,
         "bid" : bid,
         "comments" : comments,
         "seller" : user
