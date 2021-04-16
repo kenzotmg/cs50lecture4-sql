@@ -8,6 +8,7 @@ from django.db.models import Max
 
 from .models import User,Listing,Bid,Comment
 from .forms.ListingForm import ListingForm
+from .forms.CommentForm import CommentForm
 
 
 def index(request):
@@ -67,6 +68,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 @login_required(login_url='/login')
 def newlisting(request):
     if request.method == "GET":
@@ -92,22 +94,37 @@ def newlisting(request):
             })
 
 def listing(request,id):
-    #Get listing by id
-    listing = Listing.objects.get(id=id)
-    user = User.objects.get(pk=listing.user_id)
+    if request.method == "GET":
+        #Get listing by id
+        listing = Listing.objects.get(id=id)
+        user = User.objects.get(pk=listing.user_id)
 
-    #Get biggest bid on listing - bid['price__max']
-    bid = Bid.objects.filter(listing_id=id).aggregate(Max('price'))['price__max']
-    if not bid:
-        bid = listing.starting_bid
-        
-    #Get comments on listing
-    comments = listing.allcomments.all()
+        #Get biggest bid on listing - bid['price__max']
+        bid = Bid.objects.filter(listing_id=id).aggregate(Max('price'))['price__max']
+        if not bid:
+            bid = listing.starting_bid
+            
+        #Get comments on listing
+        comments = listing.allcomments.all()
 
+        commentForm = CommentForm(auto_id=False)
 
-    return render(request, 'auctions/listing.html',{
-        "listing" : listing,
-        "bid" : bid,
-        "comments" : comments,
-        "seller" : user
-    })
+        return render(request, 'auctions/listing.html',{
+            "listing" : listing,
+            "bid" : bid,
+            "comments" : comments,
+            "seller" : user,
+            "id" : id,
+            "form" : commentForm
+        })
+    elif request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            product = Listing.objects.get(id=id)
+            comment = Comment(comment = form.cleaned_data['comment'],product = product,user = request.user)
+            comment.save()
+            return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
+        else:
+            return render(request,"auctions/listing.html",{
+                "form" : form
+            })

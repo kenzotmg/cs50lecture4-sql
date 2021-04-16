@@ -9,17 +9,20 @@
                     <div class="card-body">
                         <h2 class="card-title">{{ listing.title }}</h2>
                         <p class="card-text">{{ listing.description }}</p>
-                        <h3 class="card-subtitle text-success bg-dark" style="text-align: center;">Current bid: ${{ bid }}</h3>
                         <h4 class="font-italic">Seller: {{ seller.get_username}}</h4>  
                     </div>
                   </div>
+            </div>
+            <div class="col-6">
+                <h3 class="card-subtitle text-success bg-dark" style="text-align: center;">Current bid: ${{ bid }}</h3>
             </div>
         </div>
         <div class="row">
             <div class="col-5">
                 <div class="commentBox">
-                    <form action="{% url 'listing' %}" method="POST">
-                        <textarea placeholder="Write a comment..." rows="3" name="comment" style="width: 100%;"></textarea>
+                    <form action="{% url 'listing' id=id %}" method="POST">
+                        {% csrf_token %}
+                        {{ form }}
                         <br>
                         <input type="submit" class="btn btn-primary float-right" value="Post">
                     </form>
@@ -32,7 +35,7 @@
                     <h2>Comments:</h2>
                     {% if comments %}
                         {% for comment in comments %}
-                            <div class="comment-box" style="border-style: double;">
+                            <div class="comment-box" style="border-style: double;margin-bottom: 10px;">
                                 <h4 style="text-align: left; margin-left: 5px;">{{ comment.user }} commented:</h4>
                                 <p style="margin-left: 5px;"><small>{{ comment.comment }}</small></p>
                             </div>
