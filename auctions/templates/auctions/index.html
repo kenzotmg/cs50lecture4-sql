@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <div class="container-fluid">
+        <div class="row justify-content-between">
+            {% for listing in listings %}
+                <div class="col-4">
+                    <img src="{{ listing.picture }}" alt="{{ listing.title }}" class="img-thumbnail rounded-float-left" style="height: 50%;width: 60%;">
+                    <a href='{% url "listing" listing.id %}'><h3>{{ listing.title }}</h3></a>
+                    <h4 style="color: green;">${{ listing.starting_bid }}</h4>
+                    <p class="font-weight-light font-italic">
+                        {{ listing.description }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>  
+{% endblock %}

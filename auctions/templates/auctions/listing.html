@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-6 d-flex justify-content-center">
+                <div class="card" style="width: 50%;">
+                    <img src="{{ listing.picture }}" alt="{{ listing.title }}" class="img-fluid">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ listing.title }}</h2>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <h3 class="card-subtitle text-success bg-dark" style="text-align: center;">Current bid: ${{ bid }}</h3>
+                        <h4 class="font-italic">Seller: {{ seller.get_username}}</h4>  
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="row justify-content-start">
+            <div class="col-5">
+                <div class="comments">
+                    <h2>Comments:</h2>
+                    {% for comment in comments %}
+                        <div class="comment-box" style="border-style: double;">
+                            <h4 style="text-align: left; margin-left: 5px;">{{ comment.user }} commented:</h4>
+                            <p style="margin-left: 5px;"><small>{{ comment.comment }}</small></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
