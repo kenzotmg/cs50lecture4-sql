@@ -19,12 +19,18 @@
             <div class="col-5">
                 <div class="comments">
                     <h2>Comments:</h2>
-                    {% for comment in comments %}
-                        <div class="comment-box" style="border-style: double;">
-                            <h4 style="text-align: left; margin-left: 5px;">{{ comment.user }} commented:</h4>
-                            <p style="margin-left: 5px;"><small>{{ comment.comment }}</small></p>
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="comment-box" style="border-style: double;">
+                                <h4 style="text-align: left; margin-left: 5px;">{{ comment.user }} commented:</h4>
+                                <p style="margin-left: 5px;"><small>{{ comment.comment }}</small></p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="margin-left: 10%;">
+                            <h6 class="font-italic text-muted">No comments.</h3>
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>

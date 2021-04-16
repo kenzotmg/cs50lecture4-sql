@@ -3,7 +3,7 @@
 {% block body %}
     <h2>Active Listings</h2>
     <div class="container-fluid">
-        <div class="row justify-content-between">
+        <div class="row justify-content-evenly">
             {% for listing in listings %}
                 <div class="col-4">
                     <img src="{{ listing.picture }}" alt="{{ listing.title }}" class="img-thumbnail rounded-float-left" style="height: 50%;width: 60%;">
