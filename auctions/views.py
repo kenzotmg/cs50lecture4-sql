@@ -99,11 +99,12 @@ def listing(request,id):
         listing = Listing.objects.get(id=id)
         user = User.objects.get(pk=listing.user_id)
 
-        #Get biggest bid on listing - bid['price__max']
-        bid = Bid.objects.filter(listing_id=id).aggregate(Max('price'))['price__max']
-        if not bid:
-            bid = listing.starting_bid
-            
+        #Get all bids on listing
+        oldBids = list(Bid.objects.filter(listing_id=id).order_by('-price').values())
+        bid = listing.starting_bid
+        if oldBids:
+            bid = oldBids.pop(0)['price']  
+
         #Get comments on listing
         comments = listing.allcomments.all()
 
@@ -115,7 +116,8 @@ def listing(request,id):
             "comments" : comments,
             "seller" : user,
             "id" : id,
-            "form" : commentForm
+            "form" : commentForm,
+            "oldBids" : oldBids
         })
     elif request.method == "POST":
         form = CommentForm(request.POST)

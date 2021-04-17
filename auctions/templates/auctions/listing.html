@@ -1,4 +1,5 @@
 {% extends "auctions/layout.html" %}
+{% load extratags %}
 
 {% block body %}
     <div class="container-fluid">
@@ -13,8 +14,18 @@
                     </div>
                   </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <h3 class="card-subtitle text-success bg-dark" style="text-align: center;">Current bid: ${{ bid }}</h3>
+                <div class="past-bids">
+                    <h4>Past Bids:</h4>
+                    {% if oldBids %}
+                        <ul class="list-group">
+                            {% for oldBid in oldBids %}
+                                <li class="list-group-item list-group-item-success"><p style="color: green;font-weight: 1000;">${{ oldBid.price }}</p><h6>by {{ oldBid.bidder_id|getUserFromId }}</h6> </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% if user.is_authenticated %}
