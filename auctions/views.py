@@ -9,6 +9,7 @@ from django.db.models import Max
 from .models import User,Listing,Bid,Comment
 from .forms.ListingForm import ListingForm
 from .forms.CommentForm import CommentForm
+from .forms.BidForm import BidForm
 
 
 def index(request):
@@ -110,6 +111,9 @@ def listing(request,id):
 
         commentForm = CommentForm(auto_id=False)
 
+        #Create bid form
+        bidForm = BidForm(bid)
+
         return render(request, 'auctions/listing.html',{
             "listing" : listing,
             "bid" : bid,
@@ -117,7 +121,8 @@ def listing(request,id):
             "seller" : user,
             "id" : id,
             "form" : commentForm,
-            "oldBids" : oldBids
+            "oldBids" : oldBids,
+            "bidForm" : bidForm
         })
     elif request.method == "POST":
         form = CommentForm(request.POST)
@@ -127,6 +132,22 @@ def listing(request,id):
             comment.save()
             return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
         else:
-            return render(request,"auctions/listing.html",{
+            return render(request, "auctions/listing.html", {
+                "commentForm" : form
+            })
+
+def addBid(request,id):
+    if request.method == "GET":
+        return render(request, 'auctions/index.html')
+    elif request.method == "POST":
+        maxBid = Bid.objects.filter(listing_id=id).order_by('-price').first()
+        if not maxBid:
+            maxBid = Listing.objects.get(id=id).starting_bid
+        form = BidForm(maxBid)
+        
+        if form.is_valid():
+            pass
+        else:
+            return render(request, 'auctions/linsting.html', {
                 "form" : form
             })

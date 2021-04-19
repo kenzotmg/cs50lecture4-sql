@@ -16,6 +16,17 @@
             </div>
             <div class="col-4">
                 <h3 class="card-subtitle text-success bg-dark" style="text-align: center;text-shadow: 1px 1px 2px black, 0 0 25px darkgreen, 0 0 5px lightgreen;;">Current bid: ${{ bid }}</h3>
+                {% if user.is_authenticated %}
+                    {% if seller != user %}
+                        <div class="col-12" style="border-radius: 10px;padding: 20px;border: 2px solid gray;margin-top: 5%;">
+                            <form action="{% url 'addBid' id=id %}" method="POST">
+                                {% csrf_token %}
+                                {{ bidForm }}
+                                <input type="submit" class="btn btn-primary" value="Bid" style="width: 100%;">
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
                 <div class="past-bids">
                     <h4>Past Bids:</h4>
                     {% if oldBids %}
@@ -24,6 +35,8 @@
                                 <li class="list-group-item list-group-item-dark"><p style="color: green;font-weight: 1000;">${{ oldBid.price }}</p><h6>by {{ oldBid.bidder_id|getUserFromId }}</h6> </li>
                             {% endfor %}
                         </ul>
+                    {% else %}
+                        <p class="font-italic">No past bids.</p>
                     {% endif %}
                 </div>
             </div>
@@ -34,7 +47,7 @@
                     <div class="commentBox">
                         <form action="{% url 'listing' id=id %}" method="POST">
                             {% csrf_token %}
-                            {{ form }}
+                            {{ commentForm }}
                             <br>
                             <input type="submit" class="btn btn-primary float-right" value="Post">
                         </form>
