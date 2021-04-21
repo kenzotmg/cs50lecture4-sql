@@ -19,10 +19,17 @@
                 {% if user.is_authenticated %}
                     {% if seller != user %}
                         <div class="col-12" style="border-radius: 10px;padding: 20px;border: 2px solid gray;margin-top: 5%;">
+                            {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
                             <form action="{% url 'addBid' id=id %}" method="POST">
                                 {% csrf_token %}
                                 {{ bidForm }}
-                                <input type="submit" class="btn btn-primary" value="Bid" style="width: 100%;">
+                                <input type="submit" class="btn btn-primary" value="Place bid" style="width: 30%;">
                             </form>
                         </div>
                     {% endif %}

@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.contrib import messages
 
 from .models import User,Listing,Bid,Comment
 from .forms.ListingForm import ListingForm
@@ -112,7 +113,7 @@ def listing(request,id):
         commentForm = CommentForm(auto_id=False)
 
         #Create bid form
-        bidForm = BidForm(bid)
+        bidForm = BidForm(minValue = bid)
 
         return render(request, 'auctions/listing.html',{
             "listing" : listing,
@@ -120,7 +121,7 @@ def listing(request,id):
             "comments" : comments,
             "seller" : user,
             "id" : id,
-            "form" : commentForm,
+            "commentForm" : commentForm,
             "oldBids" : oldBids,
             "bidForm" : bidForm
         })
@@ -140,14 +141,14 @@ def addBid(request,id):
     if request.method == "GET":
         return render(request, 'auctions/index.html')
     elif request.method == "POST":
-        maxBid = Bid.objects.filter(listing_id=id).order_by('-price').first()
+        maxBid = Bid.objects.filter(listing_id=id).order_by('-price').first().price
         if not maxBid:
-            maxBid = Listing.objects.get(id=id).starting_bid
-        form = BidForm(maxBid)
+            maxBid = Listing.objects.get(id=id)
+            maxBid = maxBid.starting_bid
+        form = BidForm(request.POST,minValue=maxBid)
         
         if form.is_valid():
             pass
         else:
-            return render(request, 'auctions/linsting.html', {
-                "form" : form
-            })
+            messages.warning(request,"Bid invalid!")
+            return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))

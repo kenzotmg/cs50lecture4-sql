@@ -1,12 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 
 class BidForm(forms.Form):
     bid = forms.IntegerField()
 
-    def __init__(self,minvalue,*args,**kwargs):
+    def __init__(self,*args,**kwargs):
+        minValuearg = kwargs.pop('minValue')
         super().__init__(*args,**kwargs)
-
-    def clean(self):
-        if self.bid <= minvalue:
-            raise ValidationError('Bid is equal or less than current bid')
+        bidField = self.fields['bid']
+        bidField.validators.append(MinValueValidator(minValuearg+1))
+        bidField.initial = minValuearg+1
