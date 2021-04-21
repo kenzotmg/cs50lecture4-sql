@@ -104,8 +104,10 @@ def listing(request,id):
         #Get all bids on listing
         oldBids = list(Bid.objects.filter(listing_id=id).order_by('-price').values())
         bid = listing.starting_bid
+        currentBidUser = listing.user
         if oldBids:
-            bid = oldBids.pop(0)['price']  
+            bid = oldBids[0]['price']
+            currentBidUser = oldBids.pop(0)['bidder_id']
 
         #Get comments on listing
         comments = listing.allcomments.all()
@@ -118,6 +120,7 @@ def listing(request,id):
         return render(request, 'auctions/listing.html',{
             "listing" : listing,
             "bid" : bid,
+            "currentBidUser" : currentBidUser,
             "comments" : comments,
             "seller" : user,
             "id" : id,
@@ -148,7 +151,11 @@ def addBid(request,id):
         form = BidForm(request.POST,minValue=maxBid)
         
         if form.is_valid():
-            pass
+            # <*****>
+            listing = Listing.objects.get(id=id)
+            bid = Bid(price=form.cleaned_data['bid'],listing=listing,bidder=request.user)
+            bid.save()
+            return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
         else:
             messages.warning(request,"Bid invalid!")
             return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
