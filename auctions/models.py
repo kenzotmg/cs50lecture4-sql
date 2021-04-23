@@ -23,3 +23,7 @@ class Bid(models.Model):
     price = models.IntegerField()
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE,related_name="allbids")
     bidder = models.ForeignKey(User,on_delete=models.CASCADE,related_name="bids")
+
+class Watchlist(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="watchedListing")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
