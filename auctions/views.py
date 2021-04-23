@@ -157,5 +157,5 @@ def addBid(request,id):
             bid.save()
             return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
         else:
-            messages.warning(request,"Bid invalid!")
+            messages.warning(request,"Bid invalid! Has to be greater than current bid")
             return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
