@@ -15,7 +15,7 @@
                   </div>
             </div>
             <div class="col-4">
-                <h3 class="card-subtitle text-success" style="text-align: center;text-shadow: 1px 1px 2px black, 0 0 25px darkgreen, 0 0 5px lightgreen;border-radius: 20px;">Current bid : <br>${{ bid }} <br>by {{ currentBidUser|getUserFromId}}</h3>
+                <h3 class="card-subtitle text-success" style="text-align: center;text-shadow: 1px 1px 2px black, 0 0 25px darkgreen, 0 0 5px lightgreen;border-radius: 20px;">Current bid : <br>${{ bid }} <br>by {{ currentBidUser }}</h3>
                 {% if user.is_authenticated %}
                     {% if seller != user %}
                         <div class="col-12" style="border-radius: 10px;padding: 20px;border: 2px solid gray;margin-top: 5%;">

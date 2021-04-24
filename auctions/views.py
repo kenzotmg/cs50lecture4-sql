@@ -107,7 +107,7 @@ def listing(request,id):
         currentBidUser = listing.user
         if oldBids:
             bid = oldBids[0]['price']
-            currentBidUser = oldBids.pop(0)['bidder_id']
+            currentBidUser = User.objects.get(id=oldBids.pop(0)['bidder_id'])
 
         #Get comments on listing
         comments = listing.allcomments.all()
