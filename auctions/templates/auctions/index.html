@@ -1,4 +1,5 @@
 {% extends "auctions/layout.html" %}
+{% load extratags %}
 
 {% block body %}
     <h2>Active Listings</h2>
@@ -12,6 +13,11 @@
                     <p class="font-weight-light font-italic">
                         {{ listing.description }}
                     </p>
+                    {% if listing|getWatchStateFromListing:user.id %}
+                        <p>achei essa merda</p>
+                    {% else %}
+                        <p>nao achei essa merda</p>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
