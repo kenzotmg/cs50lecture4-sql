@@ -15,7 +15,7 @@ from .forms.BidForm import BidForm
 
 def index(request):
     return render(request, "auctions/index.html",{
-        "listings" : Listing.objects.all()
+        "listings" : Listing.objects.filter(active=True)
     })
 
 
@@ -192,3 +192,14 @@ def watchlist(request):
         else:
             return render(request, 'auctions/watchlist.html')
         
+def closeAuction(request,listingId):
+    if request.method == "GET":
+        redirect_to = request.GET['next']
+        # Check if request.user is owner of listing
+        listing = Listing.objects.get(id=listingId)
+        if request.user.id == listing.user.id:
+            listing.active = False
+            listing.save()
+            return HttpResponseRedirect(redirect_to)
+        else:
+            return HttpResponseRedirect(reverse('index'))

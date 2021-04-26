@@ -11,6 +11,7 @@ class Listing(models.Model):
     picture = models.CharField(max_length=300,blank=True,default='https://cutt.ly/qvt7vz3')
     description = models.TextField()
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="products")
+    active = models.BooleanField(default=True)
     def __str__(self):
         return self.title
 

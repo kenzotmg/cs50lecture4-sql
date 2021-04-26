@@ -3,6 +3,17 @@
 
 {% block body %}
     <div class="container-fluid">
+        <div class="row">
+            {% if listing.active %}
+                <div class="alert alert-primary" role="alert">
+                    This auction is currently <strong>in progress!</strong>
+                </div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">
+                    This auction is current <strong>closed!</strong>
+                </div>
+            {% endif %}
+        </div>
         <div class="row justify-content-center">
             <div class="col-6 d-flex justify-content-center">
                 <div class="card" style="width: 50%;">
@@ -14,41 +25,61 @@
                     </div>
                   </div>
             </div>
-            <div class="col-4">
-                <h3 class="card-subtitle text-success" style="text-align: center;text-shadow: 1px 1px 2px black, 0 0 25px darkgreen, 0 0 5px lightgreen;border-radius: 20px;">Current bid : <br>${{ bid }} <br>by {{ currentBidUser }}</h3>
-                {% if user.is_authenticated %}
-                    {% if seller != user %}
-                        <div class="col-12" style="border-radius: 10px;padding: 20px;border: 2px solid gray;margin-top: 5%;">
-                            {% if messages %}
-                            <ul class="messages">
-                                {% for message in messages %}
-                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</li>
+                <div class="col-4">
+                    {% if listing.active %}
+                        <h3 class="card-subtitle text-success" style="text-align: center;text-shadow: 1px 1px 2px black, 0 0 25px darkgreen, 0 0 5px lightgreen;border-radius: 20px;">Current bid : <br>${{ bid }} <br>by {{ currentBidUser }}</h3>
+                        {% if user.is_authenticated %}
+                            {% if seller != user %}
+                                <div class="col-12" style="border-radius: 10px;padding: 20px;border: 2px solid greenyellow;margin-top: 5%;">
+                                    {% if messages %}
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                    <form action="{% url 'addBid' id=id %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ bidForm }}
+                                        <input type="submit" class="btn btn-primary" value="Place bid" style="width: 30%;">
+                                    </form>
+                                </div>
+                            {% elif seller == user %}
+                                <div class="col-12 d-flex justify-content-center" style="margin-top: 4%;">
+                                    <a href="{% url 'closeauction' listing.id %}?next={{ request.path }}"><button type="button" class="btn btn-danger">Close Auction</button></a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {% if currentBidUser == user %}
+                            <div class="alert alert-success" role="alert">
+                                <strong>Congratulations!</strong> You <strong>won</strong> the auction!
+                                <br>
+                                Bid : <strong>{{ bid }}$</strong>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success" role="alert">
+                                <strong>Congratulations to {{ currentBidUser }} for winning the auction!</strong> 
+                                <br>
+                                <strong>Bid : <strong style="color: lawngreen;font-size: 20px;">{{ bid }}$</strong></strong>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    <div class="past-bids">
+                        <h4>Past Bids:</h4>
+                        {% if oldBids %}
+                            <ul class="list-group">
+                                {% for oldBid in oldBids %}
+                                    <li class="list-group-item list-group-item-dark"><p style="color: green;font-weight: 1000;">${{ oldBid.price }}</p><h6>by {{ oldBid.bidder_id|getUserFromId }}</h6> </li>
                                 {% endfor %}
                             </ul>
-                            {% endif %}
-                            <form action="{% url 'addBid' id=id %}" method="POST">
-                                {% csrf_token %}
-                                {{ bidForm }}
-                                <input type="submit" class="btn btn-primary" value="Place bid" style="width: 30%;">
-                            </form>
-                        </div>
-                    {% endif %}
-                {% endif %}
-                <div class="past-bids">
-                    <h4>Past Bids:</h4>
-                    {% if oldBids %}
-                        <ul class="list-group">
-                            {% for oldBid in oldBids %}
-                                <li class="list-group-item list-group-item-dark"><p style="color: green;font-weight: 1000;">${{ oldBid.price }}</p><h6>by {{ oldBid.bidder_id|getUserFromId }}</h6> </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="font-italic">No past bids.</p>
-                    {% endif %}
+                        {% else %}
+                            <p class="font-italic">No past bids.</p>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
         </div>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and listing.active %}
             <div class="row">
                 <div class="col-5">
                     <div class="commentBox">
@@ -61,7 +92,7 @@
                     </div>
                 </div>
             </div>
-        {% else %}
+        {% elif not user.is_authenticated %}
             <div>
                 <p class="font-italic">Login to write a comment.</p>
             </div>
