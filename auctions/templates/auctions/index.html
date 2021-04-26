@@ -15,9 +15,9 @@
                     </p>
                     {% if user.is_authenticated %}
                         {% if listing|getWatchStateFromListing:user.id %}
-                            <a href="{% url 'watchlist' listing.id %}"><span class="tooltiptext">Remove from WatchList</span><img src="https://cdn4.iconfinder.com/data/icons/utilities-part-2/64/view_one-512.png" class="watchlistIcon"></a>
+                            <a href="{% url 'addrmwatchlist' listing.id %}?next={{ request.path }}"><span class="tooltiptext">Remove from WatchList</span><img src="https://cdn4.iconfinder.com/data/icons/utilities-part-2/64/view_one-512.png" class="watchlistIcon"></a>
                             {% else %}
-                            <a href="{% url 'watchlist' listing.id %}"><span class="tooltiptext">Add to WatchList</span><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpyzzBMSjPLFsIlevwsMruOt3kx-c0uqOWdQ&usqp=CAU" class="watchlistIcon"></a>
+                            <a href="{% url 'addrmwatchlist' listing.id %}?next={{ request.path }}"><span class="tooltiptext">Add to WatchList</span><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpyzzBMSjPLFsIlevwsMruOt3kx-c0uqOWdQ&usqp=CAU" class="watchlistIcon"></a>
                         {% endif %}
                     {% endif %}
                 </div>

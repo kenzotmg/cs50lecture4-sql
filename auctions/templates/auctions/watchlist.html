@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watch List</h2>
+    <div class="container-fluid">
+        <div class="row justify-content-evenly">
+        {% if listings %}
+            {% for listing in listings %}
+                <div class="col-lg-4 col-md-5 col-sm-6">
+                    <img src="{{ listing.picture }}" alt="{{ listing.title }}" class="img-thumbnail rounded-float-left" style="height: 50%;width: 60%;">
+                    <a href='{% url "listing" listing.id %}'><h3>{{ listing.title }}</h3></a>
+                    <h4 style="color: green;">${{ listing.starting_bid }}</h4>
+                    <p class="font-weight-light font-italic">
+                        {{ listing.description }}
+                    </p>
+                    <a href="{% url 'addrmwatchlist' listing.id %}?next={{ request.path }}"><span class="tooltiptext">Remove from WatchList</span><img src="https://cdn4.iconfinder.com/data/icons/utilities-part-2/64/view_one-512.png" class="watchlistIcon"></a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h4 class="font-italic">No items on your watchlist.</h4>
+        {% endif %}
+        </div>
+    </div>  
+{% endblock %}

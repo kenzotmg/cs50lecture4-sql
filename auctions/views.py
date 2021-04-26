@@ -162,15 +162,33 @@ def addBid(request,id):
 
 def addOrRemoveFromWatchList(request,listingId):
     if request.method == "GET":
+        redirect_to = request.GET['next']
         user = request.user
         listing = Listing.objects.get(id=listingId)
         watchlistRegister = listing.watchlist.filter(user_id=user.id).first()
         if watchlistRegister:
             watchlistRegister.delete()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(redirect_to)
         else:
             watchlist = Watchlist(user = user,listing = listing)
             watchlist.save()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(redirect_to)
     else:
         return HttpResponseRedirect(reverse('index'))
+
+def watchlist(request):
+    if request.method == "GET":
+        user = request.user
+        watchlistObjects = Watchlist.objects.filter(user_id = user.id)
+        listings = list()
+        if watchlistObjects:
+            for object in watchlistObjects:
+                listing = Listing.objects.get(id=object.listing_id)
+                listings.append(listing)
+
+            return render(request,'auctions/watchlist.html',{
+                'listings' : listings
+            })
+        else:
+            return render(request, 'auctions/watchlist.html')
+        
