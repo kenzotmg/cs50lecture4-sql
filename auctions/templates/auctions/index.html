@@ -6,17 +6,19 @@
     <div class="container-fluid">
         <div class="row justify-content-evenly">
             {% for listing in listings %}
-                <div class="col-4">
+                <div class="col-lg-4 col-md-5 col-sm-6">
                     <img src="{{ listing.picture }}" alt="{{ listing.title }}" class="img-thumbnail rounded-float-left" style="height: 50%;width: 60%;">
                     <a href='{% url "listing" listing.id %}'><h3>{{ listing.title }}</h3></a>
                     <h4 style="color: green;">${{ listing.starting_bid }}</h4>
                     <p class="font-weight-light font-italic">
                         {{ listing.description }}
                     </p>
-                    {% if listing|getWatchStateFromListing:user.id %}
-                        <p>achei essa merda</p>
-                    {% else %}
-                        <p>nao achei essa merda</p>
+                    {% if user.is_authenticated %}
+                        {% if listing|getWatchStateFromListing:user.id %}
+                            <a href="{% url 'watchlist' listing.id %}"><span class="tooltiptext">Remove from WatchList</span><img src="https://cdn4.iconfinder.com/data/icons/utilities-part-2/64/view_one-512.png" class="watchlistIcon"></a>
+                            {% else %}
+                            <a href="{% url 'watchlist' listing.id %}"><span class="tooltiptext">Add to WatchList</span><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpyzzBMSjPLFsIlevwsMruOt3kx-c0uqOWdQ&usqp=CAU" class="watchlistIcon"></a>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}

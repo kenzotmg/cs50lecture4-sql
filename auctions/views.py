@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.contrib import messages
 
-from .models import User,Listing,Bid,Comment
+from .models import User,Listing,Bid,Comment,Watchlist
 from .forms.ListingForm import ListingForm
 from .forms.CommentForm import CommentForm
 from .forms.BidForm import BidForm
@@ -159,3 +159,18 @@ def addBid(request,id):
         else:
             messages.warning(request,"Bid invalid! Has to be greater than current bid")
             return HttpResponseRedirect(reverse('listing',kwargs={'id':id}))
+
+def addOrRemoveFromWatchList(request,listingId):
+    if request.method == "GET":
+        user = request.user
+        listing = Listing.objects.get(id=listingId)
+        watchlistRegister = listing.watchlist.filter(user_id=user.id).first()
+        if watchlistRegister:
+            watchlistRegister.delete()
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            watchlist = Watchlist(user = user,listing = listing)
+            watchlist.save()
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseRedirect(reverse('index'))

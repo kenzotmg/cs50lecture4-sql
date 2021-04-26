@@ -1,0 +1,29 @@
+body {
+    padding: 10px;
+}
+
+.tooltiptext {
+    color: #222;
+    font-size: 20px;
+    font-weight: bold;
+    position:  absolute;
+    bottom: 2%;
+    left: 0px;
+    right: -25px;
+    padding: 5px 7px;
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+  }
+
+
+a:hover span {
+    visibility: visible;
+    opacity: 1;
+}
+
+.watchlistIcon{
+    height: 30px;
+}
